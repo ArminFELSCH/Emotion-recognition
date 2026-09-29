@@ -42,8 +42,3 @@ python app.py
 ```
 
 Once the script is running, open `http://127.0.0.1:7860` or `htttp://"your IPv4":7860` in your web browser.
-
-## Team and Work Breakdown
-
-* **Armin Felsch:** [To be completed: e.g., Multi-model Gradio interface development, CNN and LSTM architecture design...]
-* **[Partner's Name]:** [To be completed: e.g., Data preprocessing pipeline, Transfer Learning implementation on GPU server...]
