@@ -41,7 +41,7 @@ pip install -r requirements.txt
 python app.py
 ```
 
-Once the script is running, open `http://127.0.0.1:7860` or `htttp://"your IPv4:7860` in your web browser.
+Once the script is running, open `http://127.0.0.1:7860` or `htttp://"your IPv4":7860` in your web browser.
 
 ## Team and Work Breakdown
 
