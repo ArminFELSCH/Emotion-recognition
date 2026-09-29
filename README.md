@@ -1,10 +1,8 @@
 # RO11 Project - Speech Emotion Recognition (SER)
 
-*(Note: If a live web server link becomes available, it will be added here. Otherwise, please follow the local execution instructions below to test the application).*
-
 ## Project Description
 
-This repository contains the technical deliverable for our Speech Emotion Recognition (SER) mini-project. The objective is to classify audio recordings into 8 distinct emotions (Neutral, Calm, Happy, Sad, Angry, Fearful, Disgust, Surprised) using their Mel spectrograms. The final application features an interactive web interface developed with Gradio.
+This repository contains the technical deliverable for our Speech Emotion Recognition (SER) TD. The objective is to classify audio recordings into 8 distinct emotions (Neutral, Calm, Happy, Sad, Angry, Fearful, Disgust, Surprised) using their Mel spectrograms. The final application features an interactive web interface developed with Gradio.
 
 ## Dataset and Preprocessing
 
