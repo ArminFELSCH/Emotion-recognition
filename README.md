@@ -1,59 +1,51 @@
-# Projet RO11 - Speech Emotion Recognition (SER)
+# RO11 Project - Speech Emotion Recognition (SER)
 
-**🚀 Tester l'application en direct : \[Insérez ici le lien web de votre serveur ou de Google Colab\]**
-*(Note : Si le lien de démonstration a expiré au moment de la correction, il vous suffit de cloner ce dépôt et d'exécuter `app.py` pour lancer l'interface en local).*
+*(Note: If a live web server link becomes available, it will be added here. Otherwise, please follow the local execution instructions below to test the application).*
 
-## Description du Projet
+## Project Description
 
-Ce dépôt contient le livrable technique de notre mini-projet de reconnaissance des émotions par la voix. L'objectif est de classifier des enregistrements audio parmi 8 émotions distinctes (Neutre, Calme, Heureux, Triste, Colère, Peur, Dégoût, Surprise) à partir de leurs spectrogrammes de Mel. L'application finale propose une interface web interactive développée avec Gradio.
+This repository contains the technical deliverable for our Speech Emotion Recognition (SER) mini-project. The objective is to classify audio recordings into 8 distinct emotions (Neutral, Calm, Happy, Sad, Angry, Fearful, Disgust, Surprised) using their Mel spectrograms. The final application features an interactive web interface developed with Gradio.
 
-## Jeu de Données et Prétraitement
+## Dataset and Preprocessing
 
-Le projet exploite la base de données audio **RAVDESS**. Le pipeline de prétraitement (`data_prep.py`) :
+The project utilizes the **RAVDESS** audio dataset. The preprocessing pipeline (`data_prep.py`):
 
-1. Extrait les spectrogrammes de Mel (64 bandes, fenêtres de 25ms).
+1. Extracts Mel spectrograms (64 frequency bands, 25ms windows).
+2. Standardizes sequence lengths using padding or cropping to reach exactly 301 frames (approximately 3 seconds of audio).
 
-2. Harmonise la longueur des séquences avec un padding ou un rognage ciblant 301 frames (environ 3 secondes d'audio).
+## Architectures & Critical Analysis
 
-## Architectures & Analyse Critique
+To determine the most effective approach, we trained and compared three distinct neural network architectures:
 
-Afin de trouver la meilleure approche, nous avons entraîné et comparé trois architectures distinctes :
+1. **Model 1 (CNN from scratch) - The Compromise:**
+   A custom lightweight architecture consisting of 4 convolutional blocks (with Batch Normalization and Max-Pooling). This model achieved **50.3%** accuracy on the validation set. While it demonstrates a good ability to process the spectrogram as a global 2D image, it suffers from heavy overfitting (99% training accuracy). In real-world conditions (standard PC microphone, background noise), it experiences significant "domain shift" compared to the pristine studio voices of the RAVDESS dataset.
 
-1. **Modèle 1 (CNN from scratch) - Le compromis :**
-   Architecture légère composée de 4 blocs convolutifs (avec Batch Normalization et Max-Pooling). Ce modèle a atteint **50.3%** de précision sur le jeu de validation. Bien qu'il montre une bonne capacité à analyser le spectrogramme comme une image globale, il souffre d'un fort surapprentissage (99% en entraînement). En conditions réelles (micro PC, bruit de fond), il subit un "domain shift" important par rapport aux voix studio du dataset RAVDESS.
+2. **Model 2 (Transfer Learning ResNet50V2) - The Robust Approach:**
+   This approach leverages a model pre-trained on ImageNet. The 1D spectrograms are duplicated across 3 channels to simulate an RGB image format. The classification head was fully retrained. This methodology generally yields better generalization when encountering unseen, real-world voices.
 
-2. **Modèle 2 (Transfer Learning ResNet50V2) - La robustesse :**
-   Utilisation d'un modèle pré-entraîné sur ImageNet. Les spectrogrammes sont dupliqués sur 3 canaux pour simuler une image RGB. La tête de classification a été ré-entraînée. Cette approche permet généralement une meilleure généralisation face à des voix inédites.
+3. **Model 3 (Temporal LSTM) - The Recurrent Limit:**
+   Instead of treating the audio as a static image, this network reads the spectrogram chronologically (time step by time step). The training phase stopped prematurely (Early Stopping triggered at epoch 9), with accuracy plateauing at **21%**. This experimentally demonstrates that processing time slices in isolation captures global emotional vocal patterns much less effectively than 2D spatial convolutions.
 
-3. **Modèle 3 (LSTM Temporel) - La limite récurrente :**
-   Au lieu de voir l'audio comme une image, ce réseau lit le spectrogramme chronologiquement (pas de temps par pas de temps). L'entraînement s'est arrêté prématurément (Early Stopping à l'époque 9) avec une précision plafonnant à **21%**. Cela prouve expérimentalement que traiter les tranches de temps de manière isolée capte beaucoup moins bien les motifs émotionnels globaux d'une voix qu'une convolution 2D.
+## Repository Structure
 
-## Structure du Dépôt
+* `data_prep.py`: Audio data extraction and formatting pipeline.
+* `train_model1.py`, `train_model2.py`, `train_model3.py`: Training scripts for the three respective architectures.
+* `app.py`: Web user interface (Gradio) allowing real-time comparison of the 3 models via microphone input. *(Note: We use architecture reconstruction and weight injection to ensure cross-environment compatibility without legacy Keras errors).*
+* `modele1_scratch.h5`, `modele2_transfer.h5`, `modele3_lstm.h5`: Saved model weights.
+* `requirements.txt`: Python dependencies required for the project.
 
-* `data_prep.py` : Extraction et formatage des données audio.
+## Local Execution
 
-* `train_model1.py`, `train_model2.py`, `train_model3.py` : Scripts d'entraînement des différentes approches.
+To run the interactive web interface on your local machine, clone this repository and execute the following commands:
 
-* `app.py` : Interface utilisateur web (Gradio) permettant de comparer les 3 modèles en direct via microphone. (Utilisation de l'injection de poids pour garantir la compatibilité des environnements).
-
-* `modele1_scratch.h5`, `modele2_transfer.h5`, `modele3_lstm.h5` : Poids des modèles.
-
-* `requirements.txt` : Liste des dépendances Python.
-
-## Lancement en Local
-
-Pour exécuter l'interface web sur votre propre machine :
-
-```
+```bash
 pip install -r requirements.txt
 python app.py
-
 ```
 
-Ouvrez ensuite l'adresse `http://127.0.0.1:7860` dans votre navigateur.
+Once the script is running, open `http://127.0.0.1:7860` in your web browser.
 
-## Équipe et Répartition du Travail
+## Team and Work Breakdown
 
-* **Armin Felsch :** \[À compléter : ex. Développement de l'interface Gradio multi-modèles, conception du CNN et du LSTM...\]
-
-* **\[Nom du partenaire\] :** \[À compléter : ex. Prétraitement des données, gestion du Transfer Learning sur serveur GPU...\]
+* **Armin Felsch:** [To be completed: e.g., Multi-model Gradio interface development, CNN and LSTM architecture design...]
+* **[Partner's Name]:** [To be completed: e.g., Data preprocessing pipeline, Transfer Learning implementation on GPU server...]
